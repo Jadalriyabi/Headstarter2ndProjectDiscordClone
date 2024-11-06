@@ -1,6 +1,12 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { useMutation, useQuery } from "convex/react";
+import { SignInButton } from "@clerk/nextjs";
+import {
+  Authenticated,
+  Unauthenticated,
+  useMutation,
+  useQuery,
+} from "convex/react";
 import { useState } from "react";
 
 export default function Home() {
@@ -27,22 +33,29 @@ export default function Home() {
   /* This component returns a div containing a list of messages, displaying each one with the sender's name and the message content and a form with an input field and a button. 
   The input field updates input as the user types, and the button submits the form to add a new message. */
   return (
-    <div>
-      {messages?.map((message, index) => (
-        <div key={index}>
-          <strong>{message.sender}</strong>: {message.content}
+    <>
+      <Authenticated>
+        <div>
+          {messages?.map((message, index) => (
+            <div key={index}>
+              <strong>{message.sender}</strong>: {message.content}
+            </div>
+          ))}
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="message"
+              id="message"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <button type="submit">Send</button>
+          </form>
         </div>
-      ))}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="message"
-          id="message"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <button type="submit">Send</button>
-      </form>
-    </div>
+      </Authenticated>
+      <Unauthenticated>
+        <SignInButton />
+      </Unauthenticated>
+    </>
   );
 }

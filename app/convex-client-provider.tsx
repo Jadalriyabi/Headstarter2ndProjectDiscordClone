@@ -3,12 +3,24 @@
 /* In summary, this code sets up a way for React components to access data from Convex by using ConvexClientProvider 
   as a wrapper around parts of the app that need this data */
 
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { useAuth } from "@clerk/nextjs";
 
-const client = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!); /* This line creates a new client(connection) to convex */
+const client = new ConvexReactClient(
+  process.env.NEXT_PUBLIC_CONVEX_URL!
+); /* This line creates a new client(connection) to convex */
 
 /* This is a custom component(wrapper) that lets other parts of the app use convex data.
   It takes children as a prop, which represents any components placed inside it. */
-export function ConvexClientProvider({ children }: { children: React.ReactNode }) {
-  return <ConvexProvider client={client}>{children}</ConvexProvider>;
+export function ConvexClientProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <ConvexProviderWithClerk client={client} useAuth={useAuth}>
+      {children}
+    </ConvexProviderWithClerk>
+  );
 } /* This means it wraps its children with convexprovider, giving them access to the convex data through client. */
