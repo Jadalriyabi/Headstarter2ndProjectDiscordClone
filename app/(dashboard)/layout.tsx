@@ -52,11 +52,16 @@ export default function DashboardLayout({
 }
 
 function DashboardSidebar() {
+  // The useQuery hook fetches user information from an API. This fetch is asyncronous, so if the
+  // user data is unavailable, the sidebar is not displayed(return null)
   const user = useQuery(api.functions.user.get);
 
   if (!user) {
     return null;
   }
+
+  // SidebarContent: contains the main content of the sidebar.
+  // SidebarGroup: organizes the sidebar into different sections.
 
   return (
     <Sidebar>
